@@ -1,0 +1,130 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API",
+        "version": "1.0.0",
+        "description": "API Documentation"
+    },
+    "servers": [
+        {
+            "url": "http:\/\/localhost:8002"
+        }
+    ],
+    "paths": {
+        "\/api\/example": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Example Test"
+                ],
+                "summary": "Example Test Store",
+                "responses": {
+                    "200": {
+                        "description": "Success Response"
+                    },
+                    "400": {
+                        "description": "Error in form"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "\/api\/example\/{example}": {
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application\/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path"
+                    }
+                ],
+                "tags": [
+                    "Example Test"
+                ],
+                "summary": "Example Test Update",
+                "responses": {
+                    "200": {
+                        "description": "Success Response"
+                    },
+                    "400": {
+                        "description": "Error in form"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path"
+                    }
+                ],
+                "tags": [
+                    "Example Test"
+                ],
+                "summary": "",
+                "responses": {
+                    "200": {
+                        "description": "Success Response"
+                    },
+                    "400": {
+                        "description": "Error in form"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    }
+}
