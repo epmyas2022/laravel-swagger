@@ -20,12 +20,15 @@ class ExampleRequest extends Request
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string',
+            'name' => 'required|string',
             'schools' => 'required|array',
             'schools.*.name' => 'required|string',
-            'schools.*.city' => 'required|string',
-            
-            
+            'schools.*.city.name' => 'required|string',
+            'schools.*.array2' => 'required|array',
+            'schools.*.array2.*.name' => 'required|string',
+            'users.name' => 'required|string',
+
+
 
         ];
     }

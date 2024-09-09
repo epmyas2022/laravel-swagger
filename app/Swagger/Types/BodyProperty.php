@@ -12,27 +12,20 @@ class BodyProperty
 
     public string $key;
     public object $properties;
-    public array $requiredFields;
 
-    public function __construct(string $key, object $properties, array $required)
+    public function __construct(object $properties)
     {
-        $this->key = $key;
         $this->properties = $properties;
-        $this->requiredFields = $required;
     }
 
 
     /**
      * Get the type of the property
-     * @return array
+     * @return object
      */
-    public function getProperties(): array
+    public function getProperties(): object
     {
 
-        return $this->properties->content[$this->key];
+        return $this->properties;
     }
-
-  
-
-
 }

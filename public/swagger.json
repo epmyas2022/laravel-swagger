@@ -127,27 +127,52 @@
         "schemas": {
             "ExampleRequest": {
                 "type": "object",
-                "required": [
-                    "schools"
-                ],
                 "properties": {
-                    "name": {
-                        "type": "string"
-                    },
                     "schools": {
                         "type": "array",
                         "items": {
                             "properties": {
+                                "array2": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name"
+                                        ],
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
                                 "name": {
                                     "type": "string"
                                 },
                                 "city": {
-                                    "type": "string"
+                                    "name": {
+                                        "type": "string"
+                                    }
                                 }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "users": {
+                        "properties": {
+                            "name": {
+                                "type": "string"
                             }
                         }
                     }
-                }
+                },
+                "required": [
+                    "name"
+                ]
             }
         }
     }

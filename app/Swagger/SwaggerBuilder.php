@@ -107,15 +107,27 @@ class SwaggerBuilder
 
             $instance = $reflection->newInstance();
 
+            $renameClass = explode('\\', $class);
+
+            $renameClass = end($renameClass);
+
+
+
+
             $rules = collect($instance?->rules() ?? [])->groupBy(function ($rule, $key) {
                 return strpos($key, '.') ? explode('.', $key)[0] : $key;
-            }, true)->toArray();
+            }, true);
 
-            $requiredField = [];
+            $properties = $this->transformToSwagger($rules);
 
-            collect($rules)->each(function ($rule, $key) use ($routeProperty, $content, $class, &$requiredField) {
+            $body = new BodyProperty($properties);
 
-                $properties = $this->transformToSwagger($this->collectRules($rule));
+            $this->setComponent($renameClass, $body);
+            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
+
+
+            /*     collect($rules)->each(function ($rule, $key) use ($routeProperty, $content, $class, &$requiredField) {
+
 
                 $rules = $this->collectRules($rule[$key]);
 
@@ -128,18 +140,10 @@ class SwaggerBuilder
                 )
                     return $this->setSchemaParameters($routeProperty, new ParamProperty($key, $isRequired, 'query'));
 
-                $renameClass = explode('\\', $class);
-
-                $renameClass = end($renameClass);
-
                 if ($isRequired) $requiredField[] = $key;
 
-                $body = new BodyProperty($key, $properties, $requiredField);
-
-                $this->setComponent($renameClass, $body);
-
-                $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
-            });
+               
+            }); */
         });
     }
 
@@ -154,18 +158,7 @@ class SwaggerBuilder
 
     public function setComponent($key, BodyProperty $value)
     {
-
-        $this->schema = Arr::add($this->schema, "components.schemas.$key", [
-            'type' => 'object',
-        ]);
-
-        Arr::set($this->schema, "components.schemas.$key.required", $value->requiredFields);
-
-        $this->schema = Arr::add(
-            $this->schema,
-            "components.schemas.$key.properties.{$value->key}",
-            $value->getProperties()
-        );
+        Arr::set($this->schema, "components.schemas.$key", $value->getProperties());
     }
 
     public function setSchemaParameters(RouteProperty $routeProperty, ParamProperty $parameter)
