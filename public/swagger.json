@@ -12,26 +12,36 @@
     ],
     "paths": {
         "\/api\/example": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path"
+                    }
+                ],
+                "tags": [
+                    "Example Test"
+                ],
+                "summary": "Example Test",
+                "responses": {
+                    "200": {
+                        "description": "Success Response"
+                    },
+                    "400": {
+                        "description": "Error in form"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "requestBody": {
                     "content": {
                         "application\/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "users": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                }
+                                "$ref": "#\/components\/schemas\/ExampleRequest"
                             }
                         }
                     }
@@ -59,21 +69,7 @@
                     "content": {
                         "application\/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "users": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                }
+                                "$ref": "#\/components\/schemas\/ExampleRequest"
                             }
                         }
                     }
@@ -112,7 +108,7 @@
                 "tags": [
                     "Example Test"
                 ],
-                "summary": "",
+                "summary": "Example Test Destroy",
                 "responses": {
                     "200": {
                         "description": "Success Response"
@@ -122,6 +118,34 @@
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ExampleRequest": {
+                "type": "object",
+                "required": [
+                    "schools"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "schools": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "city": {
+                                    "type": "string"
+                                }
+                            }
+                        }
                     }
                 }
             }

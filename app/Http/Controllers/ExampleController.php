@@ -13,14 +13,15 @@ use App\Attributes\SwaggerSummary;
 class ExampleController extends Controller
 {
 
-  
-  /*   #[SwaggerSummary('Example Test')]
+
+    #[SwaggerSummary('Example Test')]
     public function index(string $id): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
-    } */
+    }
 
     #[SwaggerSummary('Example Test Store')]
+
     public function store(ExampleRequest $request): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
@@ -32,10 +33,9 @@ class ExampleController extends Controller
         return response()->json(['message' => 'Hello World']);
     }
 
+    #[SwaggerSummary('Example Test Destroy')]
     public function destroy(string $id): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
     }
-
-  
 }

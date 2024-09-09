@@ -12,9 +12,7 @@
 </head>
 
 <body>
-
     <div id="swagger-ui">
-
     </div>
     <script src="{{ asset('/js/swagger-ui-bundle.js') }}" charset="UTF-8"></script>
     <script src="{{ asset('/js/swagger-ui-standalone-preset.js') }}" charset="UTF-8"></script>

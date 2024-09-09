@@ -20,11 +20,13 @@ class ExampleRequest extends Request
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'users' => 'required|array',
-            'users.*.hola' => 'required|integer',
-         
+            'name' => 'nullable|string',
+            'schools' => 'required|array',
+            'schools.*.name' => 'required|string',
+            'schools.*.city' => 'required|string',
+            
+            
+
         ];
     }
 }

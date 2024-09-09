@@ -4,6 +4,7 @@ namespace App\Swagger\Trait;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait SwaggerConvertValidation
 {
@@ -12,6 +13,7 @@ trait SwaggerConvertValidation
     {
         return collect([
             'decimal' => 'number',
+            'numeric' => 'number',
             'double' => 'number',
             'float' => 'number',
             'int' => 'integer',
@@ -24,7 +26,25 @@ trait SwaggerConvertValidation
             'email' => 'string',
             'mixed' => 'string',
             'array' => 'array',
-            'file' => fn() => ['type' => 'string', 'format' => 'binary'],
+            'file' => function ($key, $params) {
+                $key = str_replace('items.properties', 'items',  $key);
+                return (object)[
+                    'key' => $key,
+                    'type' => [
+                        'type' => 'string',
+                        'format' => 'binary',
+                    ]
+                ];
+            },
+            'in:' => function ($key, $params) {
+                return (object)[
+                    'key' => $key,
+                    'type' => [
+                        'type' => 'string',
+                        'enum' => $params,
+                    ]
+                ];
+            },
         ]);
     }
 
@@ -44,13 +64,29 @@ trait SwaggerConvertValidation
         $typesVars = $this->getVarsList();
 
         return  $rules->map(
-            fn($rule) => $typesVars->keys()->contains($rule) ? $typesVars->get($rule) : null
+            function ($rule) use ($typesVars) {
+                $params = null;
+
+                if (Str::startsWith($rule, 'in:')) {
+                    $params =  explode(',', Str::after($rule, 'in:'));
+                    $rule = 'in:';
+                }
+
+                return $typesVars->keys()->contains($rule) ? (object)
+                [
+                    'params' => $params,
+                    'rule' => $typesVars->get($rule)
+                ] : null;
+            }
         )->whereNotNull();
     }
 
+
+
+
     public function orderAsc(Collection $rules): Collection
     {
-        return $rules->sortBy(function ($value, $key) {
+        return $rules->sortBy(function ($value) {
 
             return $value;
         });
@@ -59,60 +95,58 @@ trait SwaggerConvertValidation
     public function transformToSwagger(Collection $rules): object
     {
 
-
-        $keyMain = $rules->keys()->first();
-        $grouped = $this->orderAsc($rules->groupBy(fn() => $keyMain, true));
+        $grouped = $this->orderAsc($rules);
 
         $content = [];
-        $grouped->each(function ($validation) use ($keyMain, &$content) {
 
-            $validation->each(function ($property, $key) use ($keyMain, &$content) {
+        $grouped->each(function ($validation, $key) use (&$content, &$fieldsRequired) {
 
-                $propertyCollection = $this->orderAsc($this->collectRules($property));
+            $rules = $this->collectRules($validation);
+            $types = $this->getTypes($rules);
 
-                $types = $this->getTypes($propertyCollection);
-                $types->each(function ($type, $index) use ($keyMain, $key, &$content) {
+            $key = str_replace('*', 'items.properties',  $key);
 
-                    if ($key != $keyMain) {
-                        $keyUpdated = preg_replace("/.*\b{$keyMain}\b\.\*./", '', $key);
+            $types->each(function ($type) use ($key, $rules, &$content, &$fieldsRequired) {
+                $params = $type->params;
+                $type = $type->rule;
 
-                        if (isset($content[$keyMain]['type']) && $content[$keyMain]['type']  == 'array') {
 
-                            Arr::set($content, "{$keyMain}.items.type", $type);
-                            return;
-                        }
-                        $content = Arr::add($content, "$keyMain.items.type", 'object');
-                        $content = Arr::add($content, "$keyMain.items.properties.$keyUpdated.type", $type);
-                        return;
-                    }
 
-                    if (isset($content[$keyMain]['type']) && $content[$keyMain]['type']  == 'array') {
+                if (is_callable($type)) {
 
-                        Arr::set($content, "{$keyMain}.items.type", $type);
-                        return;
-                    }
+                    $typeFtn = $type($key, $params);
 
-                    Arr::set($content, "{$keyMain}.type", $type);
-                });
+                    return Arr::set($content, $typeFtn->key, $typeFtn->type);
+                }
+
+                if ($type === 'array') {
+                    Arr::set($content, $key, [
+                        'type' => 'array',
+                        'items' => [],
+                    ]);
+                    return;
+                }
+
+                if (isset($content[$key]) && $content[$key]['type'] === 'array') {
+
+                    Arr::set($content, $key . '.items', [
+                        'type' => $type,
+                    ]);
+
+                    return;
+                }
+                Arr::set($content, $key, [
+                    'type' => $type,
+                ]);
             });
         });
 
+   
 
 
-
-        return (object) $content;
-    }
-
-    private function arrayFormat($property): array
-    {
-
-
-        return [
-            'type' => 'array',
-            'items' => [
-                'type' => $property->type,
-                'required' => $property->required
-            ]
+        return (object) [
+            'content' => $content,
+            'required' => $fieldsRequired
         ];
     }
 }

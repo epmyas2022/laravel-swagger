@@ -12,15 +12,13 @@ class BodyProperty
 
     public string $key;
     public object $properties;
-    public bool $required;
-    public string $content;
+    public array $requiredFields;
 
-    public function __construct(string $key, object $properties, bool $required, ?string $content)
+    public function __construct(string $key, object $properties, array $required)
     {
         $this->key = $key;
         $this->properties = $properties;
-        $this->required = $required;
-        $this->content = $content ?? 'application/json';
+        $this->requiredFields = $required;
     }
 
 
@@ -30,8 +28,10 @@ class BodyProperty
      */
     public function getProperties(): array
     {
-        return $this->properties->{$this->key};
+
+        return $this->properties->content[$this->key];
     }
+
   
 
 

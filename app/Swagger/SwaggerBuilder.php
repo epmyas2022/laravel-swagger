@@ -93,6 +93,7 @@ class SwaggerBuilder
         collect($parameters)->each(function ($parameter) use ($routeProperty, $content) {
             $class =  $parameter?->getType()?->getName();
 
+
             if (!$class) return null;
 
             if (!class_exists($class) && $class)
@@ -110,11 +111,12 @@ class SwaggerBuilder
                 return strpos($key, '.') ? explode('.', $key)[0] : $key;
             }, true)->toArray();
 
+            $requiredField = [];
 
-            collect($rules)->each(function ($rule, $key) use ($routeProperty, $content) {
-
+            collect($rules)->each(function ($rule, $key) use ($routeProperty, $content, $class, &$requiredField) {
 
                 $properties = $this->transformToSwagger($this->collectRules($rule));
+
                 $rules = $this->collectRules($rule[$key]);
 
                 $isRequired = $rules->contains('required');
@@ -126,9 +128,17 @@ class SwaggerBuilder
                 )
                     return $this->setSchemaParameters($routeProperty, new ParamProperty($key, $isRequired, 'query'));
 
-                $body = new BodyProperty($key, $properties, $isRequired, $content);
+                $renameClass = explode('\\', $class);
 
-                $this->setSchemaBody($routeProperty, $body);
+                $renameClass = end($renameClass);
+
+                if ($isRequired) $requiredField[] = $key;
+
+                $body = new BodyProperty($key, $properties, $requiredField);
+
+                $this->setComponent($renameClass, $body);
+
+                $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
             });
         });
     }
@@ -141,6 +151,23 @@ class SwaggerBuilder
         $this->schema = Arr::add($this->schema, "paths.{$sections->implode('.')}",  $value);
     }
 
+
+    public function setComponent($key, BodyProperty $value)
+    {
+
+        $this->schema = Arr::add($this->schema, "components.schemas.$key", [
+            'type' => 'object',
+        ]);
+
+        Arr::set($this->schema, "components.schemas.$key.required", $value->requiredFields);
+
+        $this->schema = Arr::add(
+            $this->schema,
+            "components.schemas.$key.properties.{$value->key}",
+            $value->getProperties()
+        );
+    }
+
     public function setSchemaParameters(RouteProperty $routeProperty, ParamProperty $parameter)
     {
         $this->setSchemaPath([$routeProperty->id, 'parameters'], [
@@ -148,11 +175,13 @@ class SwaggerBuilder
         ]);
     }
 
-    public function setSchemaBody(RouteProperty $routeProperty, BodyProperty $body)
+    public function setSchemaBody(RouteProperty $routeProperty, $class, $content)
     {
-        $keySchema =   [$routeProperty->id, 'requestBody', 'content', $body->content, 'schema'];
-        $this->setSchemaPath([...$keySchema, 'type'], 'object');
-        $this->setSchemaPath([...$keySchema, 'properties', $body->key], $body->getProperties());
+
+        $this->setSchemaPath(
+            [$routeProperty->id, 'requestBody', 'content', $content, 'schema', '$ref'],
+            "#/components/schemas/$class"
+        );
     }
 
     public function getSchema($class, $methods, $tag = null): self
