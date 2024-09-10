@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Swagger\Types;
+
+use Illuminate\Support\Collection;
+
 class ParamProperty
 {
 
@@ -14,6 +17,12 @@ class ParamProperty
         $this->required = $required;
         $this->in = $in;
     }
+
+    public static function setObject(object $object): self
+    {
+        return new self($object->key, $object->required, $object->in);
+    }
+
 
     public function toObject(): object
     {

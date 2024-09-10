@@ -20,21 +20,17 @@ class SwaggerBuilder
 
     use SwaggerConvertValidation;
 
-    private $schema = [
-        'openapi' => '3.0.0',
-        'info' => [
-            'title' => 'API',
-            'version' => '1.0.0',
-            'description' => 'API Documentation',
-        ],
-        'servers' => [
-            ['url' => 'http://localhost:8002'],
-        ],
-        'paths' => [],
-
-    ];
+    private $schema = [];
 
     private  $typesResponse = [JsonResponse::class];
+
+
+    public function initConfig()
+    {
+        $this->schema = config('swagger');
+
+        return $this;
+    }
 
     /**
      * Obtener clases de un directorio
@@ -57,6 +53,8 @@ class SwaggerBuilder
 
     public function readSections(): self
     {
+
+        $this->initConfig();
 
         $classes = $this->getClasses('Http/Controllers/');
 
@@ -81,18 +79,12 @@ class SwaggerBuilder
     }
 
 
-
-
-
     public function parameters($method, RouteProperty $routeProperty, $content)
     {
-
-
         $parameters = $method->getParameters();
 
         collect($parameters)->each(function ($parameter) use ($routeProperty, $content) {
             $class =  $parameter?->getType()?->getName();
-
 
             if (!$class) return null;
 
@@ -102,7 +94,6 @@ class SwaggerBuilder
                     new ParamProperty($parameter->getName(), !$parameter->getType()->allowsNull(), 'path')
                 );
 
-
             $reflection = new \ReflectionClass($class);
 
             $instance = $reflection->newInstance();
@@ -111,39 +102,22 @@ class SwaggerBuilder
 
             $renameClass = end($renameClass);
 
-
-
-
             $rules = collect($instance?->rules() ?? [])->groupBy(function ($rule, $key) {
                 return strpos($key, '.') ? explode('.', $key)[0] : $key;
             }, true);
 
-            $properties = $this->transformToSwagger($rules);
+            if ($routeProperty->method == 'get') {
+                $queryParams = $this->transformToSwaggerQuery($rules);
 
-            $body = new BodyProperty($properties);
+                return $queryParams->each(
+                    fn($queryParam) => $this->setSchemaParameters($routeProperty, $queryParam)
+                );
+            }
+
+            $body = $this->transformToSwagger($rules);
 
             $this->setComponent($renameClass, $body);
             $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
-
-
-            /*     collect($rules)->each(function ($rule, $key) use ($routeProperty, $content, $class, &$requiredField) {
-
-
-                $rules = $this->collectRules($rule[$key]);
-
-                $isRequired = $rules->contains('required');
-
-                if (
-                    $routeProperty->method != 'post' &&
-                    $routeProperty->method != 'put' &&
-                    $routeProperty->method != 'patch'
-                )
-                    return $this->setSchemaParameters($routeProperty, new ParamProperty($key, $isRequired, 'query'));
-
-                if ($isRequired) $requiredField[] = $key;
-
-               
-            }); */
         });
     }
 
@@ -163,9 +137,11 @@ class SwaggerBuilder
 
     public function setSchemaParameters(RouteProperty $routeProperty, ParamProperty $parameter)
     {
-        $this->setSchemaPath([$routeProperty->id, 'parameters'], [
-            $parameter->toObject()
-        ]);
+        $subArray = Arr::get($this->schema, "paths.{$routeProperty->id}.parameters", []);
+
+        $subArray[] = $parameter->toObject();
+
+        Arr::set($this->schema, "paths.{$routeProperty->id}.parameters", $subArray);
     }
 
     public function setSchemaBody(RouteProperty $routeProperty, $class, $content)
@@ -179,7 +155,6 @@ class SwaggerBuilder
 
     public function getSchema($class, $methods, $tag = null): self
     {
-
 
         $methods->each(function ($method) use ($class, $tag) {
 
@@ -249,12 +224,11 @@ class SwaggerBuilder
         });
     }
 
-    public function build()
+    public function build(): string
     {
 
         $json = json_encode($this->schema, JSON_PRETTY_PRINT);
-
-
+        
         file_put_contents(public_path('swagger.json'), $json);
 
         return 'Swagger.json created';

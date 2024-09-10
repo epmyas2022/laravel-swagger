@@ -1,4 +1,5 @@
 /.phpunit.cache
+/public/hot
 /node_modules
 /public/build
 /public/hot
@@ -17,3 +18,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/public/swagger.json

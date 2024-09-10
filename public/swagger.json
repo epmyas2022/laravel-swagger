@@ -1,9 +1,12 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API",
+        "title": "Laravel",
         "version": "1.0.0",
-        "description": "API Documentation"
+        "description": "API Documentation",
+        "contact": {
+            "email": "castillo20182017@gmail.com"
+        }
     },
     "servers": [
         {
@@ -15,15 +18,15 @@
             "get": {
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "name",
                         "required": true,
-                        "in": "path"
+                        "in": "query"
                     }
                 ],
                 "tags": [
                     "Example Test"
                 ],
-                "summary": "Example Test",
+                "summary": "Example Test dows",
                 "responses": {
                     "200": {
                         "description": "Success Response"
@@ -35,144 +38,6 @@
                         "description": "Internal Server Error"
                     }
                 }
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application\/json": {
-                            "schema": {
-                                "$ref": "#\/components\/schemas\/ExampleRequest"
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Example Test"
-                ],
-                "summary": "Example Test Store",
-                "responses": {
-                    "200": {
-                        "description": "Success Response"
-                    },
-                    "400": {
-                        "description": "Error in form"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "\/api\/example\/{example}": {
-            "put": {
-                "requestBody": {
-                    "content": {
-                        "application\/json": {
-                            "schema": {
-                                "$ref": "#\/components\/schemas\/ExampleRequest"
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path"
-                    }
-                ],
-                "tags": [
-                    "Example Test"
-                ],
-                "summary": "Example Test Update",
-                "responses": {
-                    "200": {
-                        "description": "Success Response"
-                    },
-                    "400": {
-                        "description": "Error in form"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "delete": {
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path"
-                    }
-                ],
-                "tags": [
-                    "Example Test"
-                ],
-                "summary": "Example Test Destroy",
-                "responses": {
-                    "200": {
-                        "description": "Success Response"
-                    },
-                    "400": {
-                        "description": "Error in form"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "ExampleRequest": {
-                "type": "object",
-                "properties": {
-                    "schools": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "array2": {
-                                    "type": "array",
-                                    "items": {
-                                        "required": [
-                                            "name"
-                                        ],
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
-                                            }
-                                        }
-                                    }
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "city": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "name"
-                            ]
-                        }
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "users": {
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "required": [
-                    "name"
-                ]
             }
         }
     }

@@ -14,14 +14,15 @@ class ExampleController extends Controller
 {
 
 
-    #[SwaggerSummary('Example Test')]
-    public function index(string $id): JsonResponse
+    #[SwaggerSummary('Example Test dows')]
+    public function index(ExampleRequest $request): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
     }
-
+/* 
     #[SwaggerSummary('Example Test Store')]
 
+    #[SwaggerContent('multipart/form-data')]
     public function store(ExampleRequest $request): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
@@ -37,5 +38,5 @@ class ExampleController extends Controller
     public function destroy(string $id): JsonResponse
     {
         return response()->json(['message' => 'Hello World']);
-    }
+    } */
 }
