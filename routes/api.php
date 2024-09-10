@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('example', ExampleController::class);
+Route::apiResource('example', ExampleController::class)->middleware('auth');

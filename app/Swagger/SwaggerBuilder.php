@@ -2,18 +2,18 @@
 
 namespace App\Swagger;
 
-use App\Attributes\SwaggerContent;
-use App\Attributes\SwaggerResponse;
 use App\Attributes\SwaggerSection as AttributesSwaggerSection;
-use App\Attributes\SwaggerSummary;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
-use App\Swagger\SwaggerAttribute;
 use App\Swagger\Trait\SwaggerConvertValidation;
 use App\Swagger\Types\BodyProperty;
 use App\Swagger\Types\ParamProperty;
 use App\Swagger\Types\RouteProperty;
+use SwaggerAuth;
+use SwaggerContent;
+use SwaggerResponse;
+use SwaggerSummary;
 
 class SwaggerBuilder
 {
@@ -164,6 +164,8 @@ class SwaggerBuilder
                 SwaggerSummary::class
             ], $method);
 
+            $authAttribute = SwaggerAttribute::getAttribute(SwaggerAuth::class, $method);
+
             $route = $this->routes("$class@{$method->getName()}")->first();
 
             if (!$route) return;
@@ -175,7 +177,13 @@ class SwaggerBuilder
                 'id' => "/$route->uri.$methodRoute",
                 'uri' => $uri,
                 'method' => $methodRoute,
+
             ]);
+
+            if ($this->isProtectedRoute($route))
+                $this->setSchemaPath([$routeProperty->id, 'security'], [
+                    [$authAttribute->auth ?? 'bearerAuth' => []]
+                ]);
 
             $this->parameters($method, $routeProperty, $attributes->contentBody ?? null);
 
@@ -189,6 +197,15 @@ class SwaggerBuilder
         return $this;
     }
 
+
+
+    public function isProtectedRoute($route)
+    {
+        $middleware = $route->getAction()['middleware'] ?? false;
+        if (!$middleware) return false;
+
+        return collect($middleware)->contains(env('AUTH_MIDDLEWARE', 'auth'));
+    }
 
     public function setSchemaResponse(RouteProperty $routeProperty, $attributes)
     {
@@ -228,7 +245,7 @@ class SwaggerBuilder
     {
 
         $json = json_encode($this->schema, JSON_PRETTY_PRINT);
-        
+
         file_put_contents(public_path('swagger.json'), $json);
 
         return 'Swagger.json created';

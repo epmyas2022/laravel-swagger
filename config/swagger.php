@@ -14,6 +14,19 @@ return [
     'servers' => [
         ['url' => 'http://localhost:8002'],
     ],
+    "components" =>  [
+        "securitySchemes" =>  [
+            "bearerAuth" =>  [
+                "type" =>  "http",
+                "scheme" =>  "bearer",
+                "bearerFormat" =>  "JWT"
+            ],
+            'basicAuth' => [
+                'type' => 'http',
+                'scheme' => 'basic'
+            ]
+        ]
+    ],
     'paths' => [],
 
 ];

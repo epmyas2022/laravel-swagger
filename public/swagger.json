@@ -13,9 +13,27 @@
             "url": "http:\/\/localhost:8002"
         }
     ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        }
+    },
     "paths": {
         "\/api\/example": {
             "get": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "name",
@@ -26,7 +44,7 @@
                 "tags": [
                     "Example Test"
                 ],
-                "summary": "Example Test dows",
+                "summary": "",
                 "responses": {
                     "200": {
                         "description": "Success Response"
