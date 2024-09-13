@@ -55,7 +55,7 @@ Agregar el provider service en el archivo `config/app.php`
 ]
 ```
 
-Ahora ya podemos acceder a la documentación de la API en la ruta `/api/docs`.
+Ahora ya podemos acceder a la documentación de la API en la ruta `/docs`.
 
 ## Ejemplos
 
@@ -139,8 +139,11 @@ Existen distintos atributos que se pueden agregar a los métodos y clases para p
 | `#[SwaggerAuth('bearerToken')]` | Agrega un tipo de autentica especifica para una ruta (se coloca arriba del metodo)|
 | `#[SwaggerGlobal(['security' => 'bearerToken', 'middleware' => 'auth'])]` | Atributos globales afectan a todas las rutas (se coloca arriba de una clase de preferencia en Controller)|
 
-## Contribuciones
+## Referencias
 
-## Licencia
+- [Swagger](https://swagger.io/)
+- [Swagger UI](https://swagger.io/tools/swagger-ui/)
+
+## Contribuciones
 
 ## Contacto
