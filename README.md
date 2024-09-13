@@ -9,6 +9,20 @@
 Este es un paquete que busca facilitar la generación de documentación de API's en Laravel, utilizando Swagger UI.
 La documentación se genera automáticamente a partir de la sintaxis de laravel.
 
+## Indice
+
+- [Laravel Auto-Generate Swagger API Documentation](#laravel-auto-generate-swagger-api-documentation)
+  - [Indice](#indice)
+  - [Requisitos](#requisitos)
+  - [Instalación](#instalación)
+  - [Uso](#uso)
+  - [Configuración](#configuración)
+  - [Ejemplos](#ejemplos)
+  - [Atributos](#atributos)
+  - [Referencias](#referencias)
+  - [Contribuciones](#contribuciones)
+  - [Contacto](#contacto)
+
 ## Requisitos
 
 - ![Static Badge](https://img.shields.io/badge/PHP-^8.0-blue?logo=php)
