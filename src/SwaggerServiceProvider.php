@@ -5,11 +5,17 @@ use Illuminate\Support\ServiceProvider;
 class SwaggerServiceProvider extends ServiceProvider{
     public function register()
     {
-        // Registrar servicios
-
-
+     
         $this->publishes([
             __DIR__.'/config/swagger.php' => config_path('swagger.php')
+        ]);
+
+        //assets 
+
+        $this->publishes([
+            __DIR__. '/public/css' => public_path('vendor/swagger/css'),
+            __DIR__. '/public/js' => public_path('vendor/swagger/js'),
+            __DIR__. '/public/icons' => public_path('vendor/swagger/icons'),
         ]);
     }
 
