@@ -10,5 +10,5 @@ Route::get('/docs', function () {
     $builder = new SwaggerBuilder();
 
     $builder->readSections()->build();
-    return view('swagger.index');
+    return view('swagger::index');
 });
