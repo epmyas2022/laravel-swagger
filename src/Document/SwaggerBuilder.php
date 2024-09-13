@@ -44,7 +44,7 @@ class SwaggerBuilder
      */
     public function getClasses()
     {
-    
+
         $path = base_path('app/Http/Controllers/');
 
         $classes = glob($path . '*.php');
@@ -54,7 +54,7 @@ class SwaggerBuilder
             $class = str_replace(base_path('app/Http/Controllers/'), '', $class);
 
             $class = str_replace('.php', '', $class);
-       
+
             return "App\\Http\\Controllers\\$class";
         });
     }
@@ -219,13 +219,13 @@ class SwaggerBuilder
         return $this;
     }
 
-    public function build(): string
+
+    public function getJson()
     {
+        return json_encode($this->schema, JSON_PRETTY_PRINT);
+    }
 
-        $json = json_encode($this->schema, JSON_PRETTY_PRINT);
-
-        file_put_contents(base_path('/public/swagger.json'), $json);
-
-        return 'Swagger.json created';
+    public function responseJson(){
+        return response()->json($this->schema);
     }
 }
