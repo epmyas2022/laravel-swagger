@@ -44,17 +44,18 @@ class SwaggerBuilder
      */
     public function getClasses()
     {
-        $path = base_path('App/Http/Controllers/');
+    
+        $path = base_path('app/Http/Controllers/');
 
         $classes = glob($path . '*.php');
 
         return collect($classes)->map(function ($class) use ($path) {
 
-            $class = str_replace(app_path($path), '', $class);
+            $class = str_replace(base_path('app/Http/Controllers/'), '', $class);
 
             $class = str_replace('.php', '', $class);
-
-            return 'App\\' . str_replace('/', '\\', $path) . $class;
+       
+            return "App\\Http\\Controllers\\$class";
         });
     }
 
