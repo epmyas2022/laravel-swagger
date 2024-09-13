@@ -9,6 +9,11 @@
 Este es un paquete que busca facilitar la generación de documentación de API's en Laravel, utilizando Swagger UI.
 La documentación se genera automáticamente a partir de la sintaxis de laravel.
 
+## Requisitos
+
+- ![Static Badge](https://img.shields.io/badge/PHP-^8.0-blue?logo=php)
+- ![Static Badge](https://img.shields.io/badge/Laravel-^9.0-red?logo=laravel)
+
 ## Instalación
 
 Configurar el archivo `composer.json` para que pueda leer el repositorio de GitHub.
