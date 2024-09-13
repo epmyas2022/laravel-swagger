@@ -42,9 +42,11 @@ class SwaggerBuilder
      *  @param string $path
      * @return \Illuminate\Support\Collection
      */
-    public function getClasses($path)
+    public function getClasses()
     {
-        $classes = glob(app_path("$path*.php"));
+        $path = base_path('App/Http/Controllers/');
+
+        $classes = glob($path . '*.php');
 
         return collect($classes)->map(function ($class) use ($path) {
 
@@ -52,7 +54,7 @@ class SwaggerBuilder
 
             $class = str_replace('.php', '', $class);
 
-            return 'Laravel\\' . str_replace('/', '\\', $path) . $class;
+            return 'App\\' . str_replace('/', '\\', $path) . $class;
         });
     }
 
@@ -61,7 +63,7 @@ class SwaggerBuilder
 
         $this->initConfig();
 
-        $classes = $this->getClasses('Http/Controllers/');
+        $classes = $this->getClasses();
 
 
         $classes->each(function ($class) {
@@ -125,7 +127,7 @@ class SwaggerBuilder
             $body = $this->transformToSwagger($rules);
 
             $this->setComponent($renameClass, $body);
-            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'Laravellication/json');
+            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
         });
     }
 
