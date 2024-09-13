@@ -141,7 +141,7 @@ Existen distintos atributos que se pueden agregar a los métodos y clases para p
 | `#[SwaggerContent('application/json')]` | Agregar el tipo contenido en el cuerpo (se coloca arriba del metodo)|
 | `#[SwaggerResponse(['message' => 'hello'])]` | Agregar una respuesta personalizada (se coloca arriba del metodo)|
 | `#[SwaggerSummary('descripcion')]` | Agrega una descripcion al endpoint (se coloca arriba del metodo)|
-| `#[SwaggerAuth('bearerToken')]` | Agrega un tipo de autentica especifica para una ruta (se coloca arriba del metodo)|
+| `#[SwaggerAuth('bearerToken')]` | Agrega un tipo de autenticacion especifica para una ruta (se coloca arriba del metodo)|
 | `#[SwaggerGlobal(['security' => 'bearerToken', 'middleware' => 'auth'])]` | Atributos globales afectan a todas las rutas (se coloca arriba de una clase de preferencia en Controller)|
 
 ## Referencias
