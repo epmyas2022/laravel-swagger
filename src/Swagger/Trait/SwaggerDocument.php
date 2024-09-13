@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Swagger\Trait;
+namespace Laravel\Swagger\Trait;
 
-use src\Swagger\Types\BodyProperty;
-use src\Swagger\Types\ParamProperty;
-use src\Swagger\Types\RouteProperty;
+use Laravel\Swagger\Types\BodyProperty;
+use Laravel\Swagger\Types\ParamProperty;
+use Laravel\Swagger\Types\RouteProperty;
 use Illuminate\Support\Arr;
 
 trait SwaggerDocument

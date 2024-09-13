@@ -1,5 +1,5 @@
 <?php
-namespace src\Attributes;
+namespace Laravel\Swagger\Attributes;
 
 use Attribute;
 

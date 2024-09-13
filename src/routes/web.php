@@ -1,6 +1,6 @@
 <?php
 
-use src\Swagger\SwaggerBuilder;
+use Laravel\Swagger\SwaggerBuilder;
 use Illuminate\Support\Facades\Route;
 
 

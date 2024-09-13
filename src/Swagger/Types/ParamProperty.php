@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Swagger\Types;
+namespace Laravel\Swagger\Types;
 
 
 class ParamProperty

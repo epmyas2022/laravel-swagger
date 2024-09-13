@@ -1,19 +1,19 @@
 <?php
 
-namespace src\Swagger;
+namespace Laravel\Swagger;
 
-use src\Attributes\SwaggerGlobal;
-use src\Attributes\SwaggerSection;
+use Laravel\Swagger\Attributes\SwaggerGlobal;
+use Laravel\Swagger\Attributes\SwaggerSection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
-use src\Swagger\Trait\SwaggerConvertValidation;
-use src\Swagger\Types\ParamProperty;
-use src\Swagger\Types\RouteProperty;
-use src\Attributes\SwaggerAuth;
-use src\Attributes\SwaggerContent;
-use src\Attributes\SwaggerResponse;
-use src\Attributes\SwaggerSummary;
-use src\Swagger\Trait\SwaggerDocument;
+use Laravel\Swagger\Trait\SwaggerConvertValidation;
+use Laravel\Swagger\Types\ParamProperty;
+use Laravel\Swagger\Types\RouteProperty;
+use Laravel\Swagger\Attributes\SwaggerAuth;
+use Laravel\Swagger\Attributes\SwaggerContent;
+use Laravel\Swagger\Attributes\SwaggerResponse;
+use Laravel\Swagger\Attributes\SwaggerSummary;
+use Laravel\Swagger\Trait\SwaggerDocument;
 
 class SwaggerBuilder
 {
@@ -52,7 +52,7 @@ class SwaggerBuilder
 
             $class = str_replace('.php', '', $class);
 
-            return 'src\\' . str_replace('/', '\\', $path) . $class;
+            return 'Laravel\\' . str_replace('/', '\\', $path) . $class;
         });
     }
 
@@ -125,7 +125,7 @@ class SwaggerBuilder
             $body = $this->transformToSwagger($rules);
 
             $this->setComponent($renameClass, $body);
-            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'srclication/json');
+            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'Laravellication/json');
         });
     }
 

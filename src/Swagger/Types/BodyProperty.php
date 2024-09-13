@@ -1,13 +1,10 @@
 <?php
 
-namespace src\Swagger\Types;
+namespace Laravel\Swagger\Types;
 
-use src\Swagger\Trait\SwaggerConvertValidation;
 
 class BodyProperty
 {
-
-    use SwaggerConvertValidation;
 
     public string $key;
     public object $properties;

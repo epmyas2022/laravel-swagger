@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Swagger;
+namespace Laravel\Swagger;
 
 
 abstract class SwaggerAttribute
