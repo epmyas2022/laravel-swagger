@@ -16,5 +16,12 @@
         "psr-4": {
             "App\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laravel\\Swagger\\SwaggerServiceProvider"
+            ]
+        }
     }
 }
