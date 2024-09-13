@@ -1,19 +1,19 @@
 <?php
 
-namespace Laravel\Swagger;
+namespace Laravel\Swagger\Document;
 
 use Laravel\Swagger\Attributes\SwaggerGlobal;
 use Laravel\Swagger\Attributes\SwaggerSection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Route;
-use Laravel\Swagger\Trait\SwaggerConvertValidation;
-use Laravel\Swagger\Types\ParamProperty;
-use Laravel\Swagger\Types\RouteProperty;
+use Laravel\Swagger\Document\Trait\SwaggerConvertValidation;
+use Laravel\Swagger\Document\Types\ParamProperty;
+use Laravel\Swagger\Document\Types\RouteProperty;
 use Laravel\Swagger\Attributes\SwaggerAuth;
 use Laravel\Swagger\Attributes\SwaggerContent;
 use Laravel\Swagger\Attributes\SwaggerResponse;
 use Laravel\Swagger\Attributes\SwaggerSummary;
-use Laravel\Swagger\Trait\SwaggerDocument;
+use Laravel\Swagger\Document\Trait\SwaggerDocument;
 
 class SwaggerBuilder
 {

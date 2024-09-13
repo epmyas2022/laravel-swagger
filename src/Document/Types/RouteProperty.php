@@ -1,5 +1,5 @@
 <?php
-namespace Laravel\Swagger\Types;
+namespace Laravel\Swagger\Document\Types;
 
 class RouteProperty {
     

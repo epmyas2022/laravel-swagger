@@ -1,9 +1,9 @@
 <?php
 
-namespace Laravel\Swagger\Trait;
+namespace Laravel\Swagger\Document\Trait;
 
-use Laravel\Swagger\Types\BodyProperty;
-use Laravel\Swagger\Types\ParamProperty;
+use Laravel\Swagger\Document\Types\BodyProperty;
+use Laravel\Swagger\Document\Types\ParamProperty;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
