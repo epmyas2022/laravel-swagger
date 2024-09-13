@@ -5,7 +5,9 @@
     "description": "Library for generating Swagger documentation from Laravel annotations",
     "keywords": [
         "laravel",
-        "framework"
+        "swagger",
+        "documentation",
+        "auto-generate"
     ],
     "license": "MIT",
     "require": {
@@ -14,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "Laravel\\Swagger\\": "src/"
         }
     },
     "extra": {
