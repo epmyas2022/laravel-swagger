@@ -5,17 +5,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Swagger UI Administracion</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('/css/swagger-ui.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('/css/index.css') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('/icons/favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset('/icons/favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/swagger/css/swagger-ui.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/swagger/css/index.css') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('/swagger/icons/favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ asset('/swagger/icons/favicon-16x16.png') }}" sizes="16x16" />
 </head>
 
 <body>
     <div id="swagger-ui">
     </div>
-    <script src="{{ asset('/js/swagger-ui-bundle.js') }}" charset="UTF-8"></script>
-    <script src="{{ asset('/js/swagger-ui-standalone-preset.js') }}" charset="UTF-8"></script>
+    <script src="{{ asset('/swagger/js/swagger-ui-bundle.js') }}" charset="UTF-8"></script>
+    <script src="{{ asset('/swagger/js/swagger-ui-standalone-preset.js') }}" charset="UTF-8"></script>
 
     <script>
         const url = "{{ url('/') }}"

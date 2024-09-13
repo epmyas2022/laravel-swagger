@@ -223,7 +223,7 @@ class SwaggerBuilder
 
         $json = json_encode($this->schema, JSON_PRETTY_PRINT);
 
-        file_put_contents(base_path('swagger.json'), $json);
+        file_put_contents(base_path('/public/swagger.json'), $json);
 
         return 'Swagger.json created';
     }
