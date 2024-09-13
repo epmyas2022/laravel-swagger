@@ -13,9 +13,9 @@ class SwaggerServiceProvider extends ServiceProvider{
         //assets 
 
         $this->publishes([
-            __DIR__. '/public/css' => public_path('vendor/swagger/css'),
-            __DIR__. '/public/js' => public_path('vendor/swagger/js'),
-            __DIR__. '/public/icons' => public_path('vendor/swagger/icons'),
+            __DIR__. '/public/css' => public_path('swagger/css'),
+            __DIR__. '/public/js' => public_path('swagger/js'),
+            __DIR__. '/public/icons' => public_path('swagger/icons'),
         ]);
     }
 
