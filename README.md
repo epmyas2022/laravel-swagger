@@ -6,7 +6,7 @@
 
 # Laravel Auto-Generate Swagger API Documentation
 
-Este es un paquete que busca facilar la generación de documentación de API's en Laravel, utilizando Swagger UI.
+Este es un paquete que busca facilitar la generación de documentación de API's en Laravel, utilizando Swagger UI.
 La documentación se genera automáticamente a partir de la sintaxis de laravel.
 
 ## Instalación
