@@ -18,7 +18,7 @@ class SwaggerServiceProvider extends ServiceProvider{
         // Publicar archivos, como vistas o configuraciones, si es necesario
 
         $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadViewsFrom(__DIR__.'/resources/views', 'swagger');
+        $this->loadViewsFrom(__DIR__.'/resources/views/swagger', 'swagger');
     
     }
 }
