@@ -46,7 +46,7 @@ Agregar tambien
 
 ```json
     "require": {
-        "epmyas2022/laravel-swagger": "dev-library"
+        "laravel/swagger": "dev-library"
     }
 ```
 
