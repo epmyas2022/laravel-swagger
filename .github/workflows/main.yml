@@ -1,0 +1,17 @@
+name: Verson Tag
+run-name: ${{ github.actor }} start with versioning 🚀
+on: [push]
+jobs:
+  Version-Commit-Tag:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout  
+       uses: actions/checkout@v2  
+       with:  
+         fetch-depth: 0  
+      
+     - name: Version  
+       id: version  
+       uses: juliansangillo/tag-version@v1  
+       with:  
+         dev-branch: dev  
