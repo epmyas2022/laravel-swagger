@@ -5,15 +5,11 @@ jobs:
   Version-Commit-Tag:
     runs-on: ubuntu-latest
     steps:
-     - name: Checkout  
-       uses: actions/checkout@v2  
-       with:  
-         fetch-depth: 0  
-      
-     - name: Version  
-       id: version  
-       uses: juliansangillo/tag-version@v1  
-       with:  
-         dev-branch: dev  
-         production-branch: main  
-         test-branch: test  
+    - id: get_version
+      name: Get version
+      uses: jannemattila/get-version-from-tag@v3
+
+    - name: Display version
+      run: |
+        VERSION=$(echo "${{ steps.get_version.outputs.version }}")
+        echo $VERSION
