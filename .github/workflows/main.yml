@@ -1,15 +1,14 @@
 name: Verson Tag
 run-name: ${{ github.actor }} start with version 🚀
-on: [push]
+on:
+  push:
+      tags:
+       - '*'
 jobs:
   Version-Commit-Tag:
     runs-on: ubuntu-latest
     steps:
-    - id: get_version
-      name: Get version
-      uses: jannemattila/get-version-from-tag@v3
-
-    - name: Display version
-      run: |
-        VERSION=$(echo "${{ steps.get_version.outputs.version }}")
-        echo $VERSION
+     - name: GitHub Tag Name example
+       run: |
+         echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+         echo "Tag name from github.ref_name: ${{  github.ref_name }}"
