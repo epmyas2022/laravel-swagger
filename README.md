@@ -50,6 +50,14 @@ Agregar tambien
     }
 ```
 
+En caso de usar la version de laravel 11.x usar la version `dev-library-11`
+
+```json
+    "require": {
+        "laravel/swagger": "dev-library-11"
+    }
+```
+
 Ejecutar el comando `composer update` para instalar el paquete.
 
 ## Uso
