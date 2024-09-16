@@ -1,5 +1,5 @@
 name: Verson Tag
-run-name: ${{ github.actor }} start with versioning 🚀
+run-name: ${{ github.actor }} start with version 🚀
 on: [push]
 jobs:
   Version-Commit-Tag:
