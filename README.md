@@ -46,10 +46,9 @@ Agregar tambien
 
 ```json
     "require": {
-        "laravel/swagger": "^1.0"
+        "laravel/swagger": "^0.1.0"
     }
 ```
-
 
 Ejecutar el comando `composer update` para instalar el paquete.
 
