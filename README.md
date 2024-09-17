@@ -50,7 +50,6 @@ Agregar tambien
     }
 ```
 
-
 Ejecutar el comando `composer update` para instalar el paquete.
 
 ## Uso
