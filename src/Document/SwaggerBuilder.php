@@ -113,9 +113,10 @@ class SwaggerBuilder
 
             $renameClass = end($renameClass);
 
-            $rules = collect($instance?->rules() ?? [])->groupBy(function ($rule, $key) {
-                return strpos($key, '.') ? explode('.', $key)[0] : $key;
-            }, true);
+            $rules = method_exists($instance, 'rules') ?
+                collect($instance->rules())->groupBy(function ($rule, $key) {
+                    return strpos($key, '.') ? explode('.', $key)[0] : $key;
+                }, true) : collect([]);
 
             if ($routeProperty->method == 'get') {
                 $queryParams = $this->transformToSwaggerQuery($rules);
@@ -225,7 +226,8 @@ class SwaggerBuilder
         return json_encode($this->schema, JSON_PRETTY_PRINT);
     }
 
-    public function responseJson(){
+    public function responseJson()
+    {
         return response()->json($this->schema);
     }
 }
