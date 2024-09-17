@@ -20,7 +20,7 @@ La documentación se genera automáticamente a partir de la sintaxis de laravel.
   - [Ejemplos](#ejemplos)
   - [Atributos](#atributos)
   - [Referencias](#referencias)
-  - [Contribuciones](#contribuciones)
+  - [Licencia](#licencia)
   - [Contacto](#contacto)
 
 ## Requisitos
@@ -163,6 +163,11 @@ Existen distintos atributos que se pueden agregar a los métodos y clases para p
 - [Swagger](https://swagger.io/)
 - [Swagger UI](https://swagger.io/tools/swagger-ui/)
 
-## Contribuciones
+## Licencia
+
+Este proyecto está bajo la licencia MIT. Consulte el archivo [LICENSE](LICENSE) para obtener más información.
 
 ## Contacto
+
+- [Gmail](mailto:castillo20182017@gmail.com)
+- [Linkedin](https://www.linkedin.com/in/isaac-castillo-b4a213225/)
