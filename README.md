@@ -46,15 +46,7 @@ Agregar tambien
 
 ```json
     "require": {
-        "laravel/swagger": "dev-library"
-    }
-```
-
-En caso de usar la version de laravel 11.x usar la version `dev-library-11`
-
-```json
-    "require": {
-        "laravel/swagger": "dev-library-11"
+        "laravel/swagger": "^1.0"
     }
 ```
 
