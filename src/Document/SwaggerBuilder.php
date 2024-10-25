@@ -37,6 +37,31 @@ class SwaggerBuilder
         return $this;
     }
 
+
+    /**
+     * Leer directorios de manera recursiva y obtener rutas
+     * @param string $path
+     * @return array
+     */
+    public function readDirectory($path)
+    {
+
+        $files = scandir($path);
+
+        $clasess = [];
+
+        foreach ($files as $file) {
+            if ($file == '.' || $file == '..') continue;
+
+            if (is_dir($path . $file)) {
+                $clasess = array_merge($clasess, $this->readDirectory($path . $file . '/'));
+            } else {
+                $clasess[] = $path . $file;
+            }
+        }
+
+        return $clasess;
+    }
     /**
      * Obtener clases de un directorio
      *  @param string $path
@@ -47,13 +72,15 @@ class SwaggerBuilder
 
         $path = base_path('app/Http/Controllers/');
 
-        $classes = glob($path . '*.php');
+        $classes = $this->readDirectory($path);
 
         return collect($classes)->map(function ($class) use ($path) {
 
             $class = str_replace(base_path('app/Http/Controllers/'), '', $class);
 
             $class = str_replace('.php', '', $class);
+
+            $class = str_replace('/', '\\', $class);
 
             return "App\\Http\\Controllers\\$class";
         });
@@ -68,6 +95,9 @@ class SwaggerBuilder
 
 
         $classes->each(function ($class) {
+
+            if(!class_exists($class)) return;
+            
             $reflection = new \ReflectionClass($class);
 
             $section = SwaggerAttribute::getAttribute(SwaggerSection::class, $reflection);
