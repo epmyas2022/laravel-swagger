@@ -14,6 +14,7 @@ use Laravel\Swagger\Attributes\SwaggerContent;
 use Laravel\Swagger\Attributes\SwaggerResponse;
 use Laravel\Swagger\Attributes\SwaggerSummary;
 use Laravel\Swagger\Document\Trait\SwaggerDocument;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SwaggerBuilder
 {
@@ -27,7 +28,7 @@ class SwaggerBuilder
         'middleware' => 'auth',
     ];
 
-    private  $typesResponse = [JsonResponse::class];
+    private  $typesResponse = [JsonResponse::class, BinaryFileResponse::class];
 
 
     public function initConfig()
@@ -97,7 +98,7 @@ class SwaggerBuilder
         $classes->each(function ($class) {
 
             if(!class_exists($class)) return;
-            
+
             $reflection = new \ReflectionClass($class);
 
             $section = SwaggerAttribute::getAttribute(SwaggerSection::class, $reflection);
