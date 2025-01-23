@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+
 trait SwaggerConvertValidation
 {
 
@@ -64,6 +65,9 @@ trait SwaggerConvertValidation
      */
     public function getParamsRule($rule): ?object
     {
+
+        if(gettype($rule) == 'object') return null;
+
         return match (true) {
             Str::contains($rule, ':') => (object) [
                 'key' => explode(':', $rule)[0],
@@ -79,7 +83,7 @@ trait SwaggerConvertValidation
     /**
      * Convert the rules to a collection
      * @param array|string $rules
-     * @return  
+     * @return
      */
     public function collectRules($rules): Collection
     {
@@ -92,7 +96,7 @@ trait SwaggerConvertValidation
         return  $rules->map(
             function ($rule) use ($typesVars) {
                 $params = $this->getParamsRule($rule);
-                return $typesVars->keys()->contains($params->key) ? (object)
+                return $typesVars->keys()->contains($params?->key) ? (object)
                 [
                     'params' => $params->values,
                     'rule' => $typesVars->get($params->key),
@@ -179,7 +183,7 @@ trait SwaggerConvertValidation
      * Transform the rules to swagger format query
      * @param Collection $rules
      */
-    public function transformToSwaggerQuery(Collection $rules): Collection 
+    public function transformToSwaggerQuery(Collection $rules): Collection
     {
 
         return  collect($rules)->transform(function ($rule, $key) {
