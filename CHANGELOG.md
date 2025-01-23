@@ -13,6 +13,7 @@ Este archivo contiene un registro de todos los cambios significativos en cada ve
 - Se removieron assets innecesarios.
 - Se mejoró la estructura de json de respuesta para el swagger.
 - Se corrigió el retorno nulo para reglas de validación.
+- Soportando tipos de datos de BinaryFileResponse.
 
 [0.2.0]: https://github.com/epmyas2022/laravel-swagger/releases/tag/v0.2.0
 
