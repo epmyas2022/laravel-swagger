@@ -12,9 +12,11 @@ use Laravel\Swagger\Document\Types\RouteProperty;
 use Laravel\Swagger\Attributes\SwaggerAuth;
 use Laravel\Swagger\Attributes\SwaggerContent;
 use Laravel\Swagger\Attributes\SwaggerResponse;
+use Laravel\Swagger\Attributes\SwaggerResponseFile;
 use Laravel\Swagger\Attributes\SwaggerSummary;
 use Laravel\Swagger\Document\Trait\SwaggerDocument;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Laravel\Swagger\Constants\ContentType;
 
 class SwaggerBuilder
 {
@@ -33,12 +35,26 @@ class SwaggerBuilder
 
     public function initConfig()
     {
-        $this->schema = config('swagger');
+        $this->schema = config('swagger.document');
+        $this->setServer($this->defaultServer());
 
         return $this;
     }
 
+    public function defaultServer()
+    {
 
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $port = $_SERVER['SERVER_PORT'] ?? env('APP_PORT', '8000');
+
+        // Verificamos si el puerto ya está en el host (en muchos casos cuando no es el puerto por defecto)
+        if (strpos($host, ':') === false && $port != 80 && $port != 443) {
+            $host .= ":{$port}";
+        }
+
+        return  ['url' => "{$scheme}://{$host}", 'description' => env('APP_ENV', 'default')];
+    }
     /**
      * Leer directorios de manera recursiva y obtener rutas
      * @param string $path
@@ -97,7 +113,7 @@ class SwaggerBuilder
 
         $classes->each(function ($class) {
 
-            if(!class_exists($class)) return;
+            if (!class_exists($class)) return;
 
             $reflection = new \ReflectionClass($class);
 
@@ -144,6 +160,10 @@ class SwaggerBuilder
 
             $renameClass = end($renameClass);
 
+            if ($content === ContentType::FORM_DATA) {
+                $this->setEnconding(true);
+            }
+
             $rules = method_exists($instance, 'rules') ?
                 collect($instance->rules())->groupBy(function ($rule, $key) {
                     return strpos($key, '.') ? explode('.', $key)[0] : $key;
@@ -160,7 +180,7 @@ class SwaggerBuilder
             $body = $this->transformToSwagger($rules);
 
             $this->setComponent($renameClass, $body);
-            $this->setSchemaBody($routeProperty, $renameClass, $content ?? 'application/json');
+            $this->setSchemaBody($routeProperty, $renameClass, $content ?? ContentType::JSON);
         });
     }
 
@@ -171,9 +191,11 @@ class SwaggerBuilder
 
         $methods->each(function ($method) use ($class, $tag) {
 
+
             $attributes = SwaggerAttribute::getAttributesMethod([
                 SwaggerContent::class,
                 SwaggerResponse::class,
+                SwaggerResponseFile::class,
                 SwaggerSummary::class
             ], $method);
 
@@ -204,7 +226,10 @@ class SwaggerBuilder
 
             $this->setSchemaPath([$routeProperty->id, 'summary'], $attributes->summary ?? '');
 
-            $this->setSchemaResponse($routeProperty, $attributes);
+            if ($method->getReturnType() == BinaryFileResponse::class)
+                $this->setSchemaResponseFile($routeProperty, $attributes);
+            else
+                $this->setSchemaResponse($routeProperty, $attributes);
         });
 
         return $this;

@@ -4,9 +4,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Swagger UI Administracion</title>
+    <title>Swagger UI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ asset('/swagger/css/swagger-ui.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('/swagger/css/index.css') }}" />
+    @if ($theme)
+        <link rel="stylesheet" type="text/css" href="{{ asset('/swagger/css/themes/_base.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset("/swagger/css/themes/$theme.css") }}" />
+    @endif
     <link rel="icon" type="image/png" href="{{ asset('/swagger/icons/favicon-32x32.png') }}" sizes="32x32" />
     <link rel="icon" type="image/png" href="{{ asset('/swagger/icons/favicon-16x16.png') }}" sizes="16x16" />
 </head>
@@ -19,7 +24,6 @@
 
     <script>
         const url = "{{ url('/') }}"
-
         // This is a plugin for the SwaggerUI
         const CaseInsensitiveFilterPlugin = function(system) {
             return {
@@ -61,5 +65,6 @@
         };
     </script>
 </body>
+
 
 </html>

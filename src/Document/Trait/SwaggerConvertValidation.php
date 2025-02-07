@@ -12,6 +12,19 @@ use Illuminate\Support\Str;
 trait SwaggerConvertValidation
 {
 
+    private $enconding = false;
+
+    private $keysRename = [];
+
+    /**
+     * Define of the format key[] in arrays
+     * @var bool
+     * @return void
+     */
+    public function setEnconding($enconding)
+    {
+        $this->enconding = $enconding;
+    }
     /**
      * Define the types of data for the validation rules  (types validator laravel vs swagger types)
      * @return Collection
@@ -33,7 +46,7 @@ trait SwaggerConvertValidation
             'email' => 'string',
             'mixed' => 'string',
             'array' => 'array',
-            'file' => function ($key, $params) {
+            'file' => function ($key) {
                 $key = str_replace('items.properties.', 'items',  $key);
                 return (object)[
                     'key' => $key,
@@ -66,7 +79,7 @@ trait SwaggerConvertValidation
     public function getParamsRule($rule): ?object
     {
 
-        if(gettype($rule) == 'object') return null;
+        if (gettype($rule) == 'object') return null;
 
         return match (true) {
             Str::contains($rule, ':') => (object) [
@@ -106,6 +119,20 @@ trait SwaggerConvertValidation
     }
 
 
+    private function getPrefix($key, $deep = false)
+    {
+        $prefix = explode('.', $key)[0] ?? $key;
+
+        if ($deep && strpos($prefix, "[")) {
+            $prefix = explode('[', $prefix)[0];
+        }
+        return $prefix;
+    }
+
+    private function getSuffix($key)
+    {
+        return array_slice(explode('.', $key), 1);
+    }
 
     /**
      * Mapper the name of the key to swagger format
@@ -114,15 +141,56 @@ trait SwaggerConvertValidation
      */
     public function mapperKey($key)
     {
+        $regex_properties = '/(?<!\*)\.(?!\*)/';
+        $regex_items = '/(\.\*\.)|(\.\*)/';
 
-        $key = preg_replace('/(?<!\*)\.(?!\*)/', '.properties.', $key);
+        if (!$this->enconding) {
+            $key = preg_replace($regex_properties, '.properties.', $key);
+            $key = preg_replace($regex_items, '.items.properties.', $key);
+        }
 
-        $key = preg_replace('/(\.\*\.)|(\.\*)/', '.items.properties.', $key);
-
-        return $key;
+        return $this->encodingSymbolKey($key);
     }
 
 
+    /**
+     * Encoding the key with symbol example: key[]
+     * @param string $key
+     * @param string $symbol
+     * @return string
+     */
+    private function encodingSymbolKey($key)
+    {
+        if (!$this->enconding) return $key;
+
+        $prefix = $this->getPrefix($key);
+        $suffix = $this->getSuffix($key);
+
+        $suffixEncoded = collect($suffix)
+            ->map(fn($value) => $value == '*' ? "[]" : "[$value]")
+            ->implode('');
+
+        $keyReplace = !empty($suffixEncoded) ? $prefix . $suffixEncoded : $prefix;
+
+        $newKey = preg_replace("/" . preg_quote($prefix, "/") . "(?:\.\*|\.\w+)+/", "$keyReplace", $key);
+
+        $this->keysRename[$prefix] = $newKey;
+
+        return preg_match("/\[\]/", $newKey) ?  "$newKey.items" : "$newKey";
+    }
+
+
+    public function deleteDuplicateKeys(&$content)
+    {
+        collect($this->keysRename)->each(function ($newKey, $oldKey) use (&$content) {
+            if (preg_match("/\[\]/", $newKey)  &&preg_match("/$oldKey/", $newKey)) {
+
+                Arr::forget($content, $oldKey);
+            }
+        });
+
+        $this->keysRename = [];
+    }
     /**
      * Transform the rules to swagger format body
      * @param Collection $rules
@@ -142,6 +210,7 @@ trait SwaggerConvertValidation
 
             $key = $this->mapperKey($key);
 
+
             $types->each(function ($type) use ($key, $rules, &$content, &$fieldsRequired) {
                 $params = $type->params;
                 $type = $type->rule;
@@ -151,24 +220,38 @@ trait SwaggerConvertValidation
                 if ($isRequired)
                     $this->requiredFields($key, $content, $fieldsRequired);
 
+
+
+                if (strpos($key, 'items')) {
+                    Arr::set($content, $this->getPrefix($key) . ".type", 'array');
+                }
+
+
                 if (is_callable($type)) {
                     $typeFtn = $type($key, $params);
                     return Arr::set($content, $typeFtn->key, $typeFtn->type);
                 }
 
-                if ($type === 'array') {
+
+                /*     if ($type === 'array') {
                     Arr::set($content, $key, ['type' => 'array', 'items' => []]);
                     return;
-                }
+                } */
 
                 if (Arr::has($content, $key) && Arr::get($content, "$key.type") === 'array') {
                     Arr::set($content, "$key.items.type", $type);
                     return;
                 }
 
+
+
                 Arr::set($content, $key, ['type' => $type]);
             });
         });
+
+
+
+        $this->deleteDuplicateKeys($content);
 
 
         return new BodyProperty((object)[
@@ -207,6 +290,11 @@ trait SwaggerConvertValidation
      */
     public function requiredFields($key, &$content, &$fieldsRequired)
     {
+
+        $prefix = $this->getPrefix($key, true);
+
+        $key =  isset($this->keysRename[$prefix]) ? $this->keysRename[$prefix] : $key;
+
         $keysArray = explode('.', $key);
         $keyValue = end($keysArray);
         $keys = str_replace("items.properties.$keyValue", 'items.required',  $key);
@@ -214,7 +302,6 @@ trait SwaggerConvertValidation
 
 
         if (count($keysArray) == 1) {
-
             $fieldsRequired[] = $keyValue;
             return;
         }
