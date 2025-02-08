@@ -6,7 +6,7 @@ use Laravel\Swagger\Document\Types\BodyProperty;
 use Laravel\Swagger\Document\Types\ParamProperty;
 use Laravel\Swagger\Document\Types\RouteProperty;
 use Illuminate\Support\Arr;
-
+use Laravel\Swagger\Constants\ContentType;
 
 trait SwaggerDocument
 {
@@ -22,6 +22,15 @@ trait SwaggerDocument
     public function setComponent($key, BodyProperty $value)
     {
         Arr::set($this->schema, "components.schemas.$key", $value->getProperties());
+    }
+
+    public  function setServer(array $server)
+    {
+        $servers = Arr::get($this->schema, 'servers', []);
+
+        $servers[] = $server;
+
+        Arr::set($this->schema, 'servers', $servers);
     }
 
     public function setSchemaParameters(RouteProperty $routeProperty, ParamProperty $parameter)
@@ -42,7 +51,6 @@ trait SwaggerDocument
         );
     }
 
-
     public function setSchemaSecurity(RouteProperty $routeProperty, $security)
     {
         $securityArray = Arr::get($this->schema, "paths.{$routeProperty->id}.security", []);
@@ -52,6 +60,22 @@ trait SwaggerDocument
         $this->setSchemaPath([$routeProperty->id, 'security'], $securityArray);
     }
 
+    public function setSchemaResponseFile(RouteProperty $routeProperty, $attributes)
+    {
+        $this->setSchemaPath([$routeProperty->id, 'responses'], [
+            $attributes?->statusResFile ?? 200 => [
+                'description' => $attributes?->descriptionResFile ?? 'Example Response',
+                'content' => [
+                    $attributes?->contentResponseFile ?? ContentType::PDF => [
+                        'schema' => [
+                            'type' => 'string',
+                            'format' => 'binary'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
 
     public function setSchemaResponse(RouteProperty $routeProperty, $attributes)
     {
