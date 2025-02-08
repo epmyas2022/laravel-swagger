@@ -153,13 +153,32 @@ trait SwaggerConvertValidation
     }
 
 
+    public function setRenameKey($key, $newKey)
+    {
+
+        if (empty($this->keysRename)) {
+            $this->keysRename[$key] = $newKey;
+            return;
+        }
+
+        collect($this->keysRename)->each(function ($value, $oldKey) use ($newKey, $key) {
+            if (preg_match("/$oldKey/", $newKey)) {
+
+                return $this->keysRename[$oldKey] = $newKey;
+            } else {
+
+                $this->keysRename[$key] = $newKey;
+            }
+        });
+    }
+
     /**
      * Encoding the key with symbol example: key[]
      * @param string $key
      * @param string $symbol
      * @return string
      */
-    private function encodingSymbolKey($key)
+    private function encodingSymbolKey($key, $save = true, $addKey = ".items")
     {
         if (!$this->enconding) return $key;
 
@@ -174,21 +193,26 @@ trait SwaggerConvertValidation
 
         $newKey = preg_replace("/" . preg_quote($prefix, "/") . "(?:\.\*|\.\w+)+/", "$keyReplace", $key);
 
-        $this->keysRename[$prefix] = $newKey;
 
-        return preg_match("/\[\]/", $newKey) ?  "$newKey.items" : "$newKey";
+        if ($save) {
+            $this->setRenameKey($key, $newKey);
+        }
+
+        return preg_match("/\[\]/", $newKey) ?  "$newKey$addKey" : "$newKey";
     }
 
 
-    public function deleteDuplicateKeys(&$content)
+    public function deleteDuplicateKeys(&$content, &$fieldsRequired)
     {
-        collect($this->keysRename)->each(function ($newKey, $oldKey) use (&$content) {
-            if (preg_match("/\[\]/", $newKey)  &&preg_match("/$oldKey/", $newKey)) {
+        collect($this->keysRename)->each(function ($newKey, $oldKey) use (&$content, &$fieldsRequired) {
 
-                Arr::forget($content, $oldKey);
+            $encodingKey = $this->encodingSymbolKey($oldKey, false, '');
+
+            if ($encodingKey != $newKey) {
+                Arr::forget($content, $encodingKey);
+                Arr::forget($fieldsRequired, $encodingKey);
             }
         });
-
         $this->keysRename = [];
     }
     /**
@@ -250,14 +274,14 @@ trait SwaggerConvertValidation
         });
 
 
-
-        $this->deleteDuplicateKeys($content);
-
+        if ($this->enconding) {
+            $this->deleteDuplicateKeys($content, $fieldsRequired);
+        }
 
         return new BodyProperty((object)[
             'type' => 'object',
             'properties' => $content,
-            'required' => $fieldsRequired,
+            'required' => array_values($fieldsRequired),
         ]);
     }
 
@@ -290,10 +314,9 @@ trait SwaggerConvertValidation
      */
     public function requiredFields($key, &$content, &$fieldsRequired)
     {
+        $encodingKey = $this->encodingSymbolKey($key, false, '');
 
-        $prefix = $this->getPrefix($key, true);
-
-        $key =  isset($this->keysRename[$prefix]) ? $this->keysRename[$prefix] : $key;
+        $key = isset($this->keysRename[$key]) ? $this->keysRename[$encodingKey] : $encodingKey;
 
         $keysArray = explode('.', $key);
         $keyValue = end($keysArray);
@@ -302,7 +325,8 @@ trait SwaggerConvertValidation
 
 
         if (count($keysArray) == 1) {
-            $fieldsRequired[] = $keyValue;
+            $fieldsRequired[$key] = $this->enconding ?
+                str_replace("[items]", "", $keyValue) : $keyValue;
             return;
         }
         $subArray = Arr::get($content, $keys, []);
