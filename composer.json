@@ -1,6 +1,6 @@
 {
     "name": "laravel/swagger",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "type": "project",
     "description": "Library for generating Swagger documentation from Laravel annotations",
     "keywords": [
