@@ -2,13 +2,22 @@
 
 Este archivo contiene un registro de todos los cambios significativos en cada versión de este proyecto.
 
-## [0.2.0] - 2024-10-25
+## [0.3.0] - 2025-02-08
+
+### Added version 0.3.0
+
+- Se agregaron temas para configuración de Swagger.
+- Se agregó el nuevo atributo `#SwaggerResponseFile` para documentar las respuestas de los controladores.
+- Se agregó el soporte de arrays en formatos `multipart/form-data` (beta).
+- Se agregaron constantes para los tipos de datos: `ThemeSwagger::STRING` y `ContentType::STRING`.
 
 ### Added version 0.2.0
 
 - Se agregó recursividad en la hora de buscar controladores en el directorio `controllers`.
 
 ### Changed
+
+[0.2.0]
 
 - Se removieron assets innecesarios.
 - Se mejoró la estructura de json de respuesta para el swagger.

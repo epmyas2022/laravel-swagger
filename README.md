@@ -19,6 +19,7 @@ La documentación se genera automáticamente a partir de la sintaxis de laravel.
   - [Configuración](#configuración)
   - [Ejemplos](#ejemplos)
   - [Atributos](#atributos)
+  - [Temas](#temas)
   - [Referencias](#referencias)
   - [Licencia](#licencia)
   - [Contacto](#contacto)
@@ -156,7 +157,33 @@ Existen distintos atributos que se pueden agregar a los métodos y clases para p
 | `#[SwaggerResponse(['message' => 'hello'])]` | Agregar una respuesta personalizada (se coloca arriba del metodo)|
 | `#[SwaggerSummary('descripcion')]` | Agrega una descripcion al endpoint (se coloca arriba del metodo)|
 | `#[SwaggerAuth('bearerToken')]` | Agrega un tipo de autenticacion especifica para una ruta (se coloca arriba del metodo)|
+| `#[SwaggeResponseFile` | Agrega una respuesta de archivo (se coloca arriba del metodo)|
 | `#[SwaggerGlobal(['security' => 'bearerToken', 'middleware' => 'auth'])]` | Atributos globales afectan a todas las rutas (se coloca arriba de una clase de preferencia en Controller)|
+
+## Temas
+
+Se pueden personalizar los temas de la documentación, para ello se debe modificar el archivo `config/swagger.php`.
+
+```php
+return [
+ 'options' => [
+        'theme' => ThemeSwagger::X_CODE_LIGHT,
+    ],
+]
+```
+
+Los temas disponibles son:
+
+- `ThemeSwagger::X_CODE_LIGHT`
+- `ThemeSwagger::DRACULA`
+- `ThemeSwagger::MONOKAI`
+- `ThemeSwagger::NORD`
+- `ThemeSwagger::SEPIA`
+- `ThemeSwagger::ONE_DARK`
+- `ThemeSwagger::UNIVERSAL_DARK`
+- `ThemeSwagger::SELOREX_SWAGGER`
+
+![image](./screenshots/image.png)
 
 ## Referencias
 
