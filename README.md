@@ -47,7 +47,7 @@ Agregar tambien
 
 ```json
     "require": {
-        "laravel/swagger": "^0.2.0"
+        "laravel/swagger": "^0.3.0"
     }
 ```
 
