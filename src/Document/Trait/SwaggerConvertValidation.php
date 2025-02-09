@@ -155,20 +155,16 @@ trait SwaggerConvertValidation
 
     public function setRenameKey($key, $newKey)
     {
-
         if (empty($this->keysRename)) {
             $this->keysRename[$key] = $newKey;
             return;
         }
-
         collect($this->keysRename)->each(function ($value, $oldKey) use ($newKey, $key) {
-            if (preg_match("/$oldKey/", $newKey)) {
-
-                return $this->keysRename[$oldKey] = $newKey;
-            } else {
-
-                $this->keysRename[$key] = $newKey;
+            $encodingKey = $this->encodingSymbolKey($oldKey, false, '');
+            if (preg_match("/^" . preg_quote($encodingKey, "/") . "/", $newKey)) {
+                return  $this->keysRename[$oldKey] = $newKey;
             }
+            $this->keysRename[$key] = $newKey;
         });
     }
 
@@ -180,13 +176,18 @@ trait SwaggerConvertValidation
      */
     private function encodingSymbolKey($key, $save = true, $addKey = ".items")
     {
+
+
         if (!$this->enconding) return $key;
 
         $prefix = $this->getPrefix($key);
         $suffix = $this->getSuffix($key);
 
         $suffixEncoded = collect($suffix)
-            ->map(fn($value) => $value == '*' ? "[]" : "[$value]")
+            ->map(function ($value) use ($suffix) {
+                if (collect($suffix)->last() == "*") return  "[]";
+                return $value == '*' ? "[0]" : "[$value]";
+            })
             ->implode('');
 
         $keyReplace = !empty($suffixEncoded) ? $prefix . $suffixEncoded : $prefix;
@@ -197,6 +198,7 @@ trait SwaggerConvertValidation
         if ($save) {
             $this->setRenameKey($key, $newKey);
         }
+
 
         return preg_match("/\[\]/", $newKey) ?  "$newKey$addKey" : "$newKey";
     }
